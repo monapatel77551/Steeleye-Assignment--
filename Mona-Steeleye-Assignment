@@ -1,0 +1,53 @@
+Steeleye Assignment
+Ques-1-: Explain what the simple List component does?
+Solution-: List component in the code is used to display the list of items stored in array in unorder list. When we click on index of text of the item color changes to red i.e handleClick() function is implemented.
+
+Ques-2-: What problems / warnings are there with code?
+Solution-: Syntax Error in useState() : const [setSelectedIndex, selectedIndex] = useState(); setSelectedIndex should be in 2nd parameter because value store in setSelected will update the state.
+ correct syntax will be: const[select Index, setSelectedIndex]= useState();
+ There is no function like shapeOf(), it should be shape(). Its a Type  error. correct syntax will be:
+ WrappedListComponents.propTypes ={ items: PropTypes.array(PropTypes.shape({ text: PropTypes.string.isRequired, })), };
+
+Ques-3-: Please fix, optimize, and/or modify the component as much as you think is necessary.
+Solution-: code given is:
+import React, { useState, useEffect, memo} from 'react'; import PropTypes from 'prop-types';
+ 
+// Single List Item const WrappedSingleListItem = ({index, isSelected, onClickHandler, text, }) => { return (
+ <li style={{ backgroundColor: isSelected ? 'green' : 'red'}} onClick={onClickHandler(index)} > {text} 
+); };
+ WrappedSingleListItem.propTypes = { index: PropTypes.number, isSelected: PropTypes.bool, onClickHandler: PropTypes.func.isRequired, text: PropTypes.string.isRequired, };
+ const SingleListItem = memo(WrappedSingleListItem);
+ // List Component const WrappedListComponent = ({ items, }) => { const [setSelectedIndex, selectedIndex] = useState();
+ useEffect(() => { setSelectedIndex(null); }, [items]);
+ const handleClick = index => { setSelectedIndex(index); };
+ return (
+ <ul style={{ textAlign: 'left' }}> {items.map((item, index) => ( <SingleListItem onClickHandler={() => handleClick(index)} text={item.text} index={index} isSelected={selectedIndex} /> ))}
+ ) };
+ WrappedListComponent.propTypes = { items: PropTypes.array(PropTypes.shapeOf({ text: PropTypes.string.isRequired, })), };
+ WrappedListComponent.defaultProps = { items: null, };
+ const List = memo(WrappedListComponent);
+ 
+export default List;
+ 
+correct code 
+import React, { useState, UseEffect, memo} from "react"; import proptypes from "pro-types";
+const WrappedSingleListItem = ({ index, isSelected, onClickHandler, text}) => { return(
+onClickHandler(index)} > {text}
+); };
+WrappedSingleListItem.propTypes = { index: PropTypes.number, isSelected: PropTypes.bool, onClickHandler: PropTypes.func.isRequired, text: PropTypes.string.isRequired, };
+ const SingleListItem = memo(WrappedSingleListItem);
+ const WrappedListComponent = ({ items }) => { const [selectedIndex, setSelectedIndex] = useState();
+ useEffect(() => { setSelectedIndex(null); }, [items]);
+ const handleClick = (index) => { setSelectedIndex(index); };
+ return ( 
+<ul style={{ textAlign: "left" }}> {items.map((item, index) => ( <SingleListItem onClickHandler={() => handleClick(index)} text={item.text} index={index} key={index} isSelected={selectedIndex === index} /> ))}
+ ); };
+ WrappedListComponent.propTypes = { items: PropTypes.arrayOf( PropTypes.shape({ text: PropTypes.string.isRequired }) ) };
+ WrappedListComponent.defaultProps = { items: [ { text: "Mona", index: 1 }, { text: "Patel", index: 2 }, { text: "code", index: 3 }, { text: "hello", index: 4 } ] };
+ const List = memo(WrappedListComponent);
+ 
+export default List;
+
+
+
+
